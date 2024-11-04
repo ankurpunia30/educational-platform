@@ -11,6 +11,7 @@ const {    userRegistration,
     updateUser,
     getUser
 }=require('../controllers/userAuthentication');
+const authenticate = require('../middleware/authenticate');
 
 
 
@@ -23,25 +24,25 @@ router.post('/login',userLogin);
 
 //fetching profile
 
-router.get('/profile',getUser);
+router.get('/getUser',authenticate,getUser);
 
 
 //updating profile
 
-router.put('/update',updateUser);
+router.put('/updateUser',authenticate,updateUser);
 
 //deleting profile
 
-router.delete('/delete',deleteUser);
+router.delete('/deleteUser',authenticate,deleteUser);
 
 //logout
-router.post('/logout',userLogout);
+router.post('/logout',authenticate,userLogout);
 
 //forgot password
 router.post('/forgot-password',userForgotPassword);
 
 //reset password
-router.put('/reset-password',userResetPassword);
+router.put('/reset-password',authenticate,userResetPassword);
 
 
 module.exports = router;

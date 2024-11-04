@@ -6,8 +6,7 @@ const app=express();
 app.use(express.json());
 
 connectDB();
-app.use('/user',userRoute
-);
+app.use('/user',userRoute);
 const PORT=process.env.PORT || 3100;
 
 
