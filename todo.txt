@@ -7,10 +7,9 @@ Role Management
 Database Indexing: Optimize key fields like email for faster query performance, especially for login and profile retrieval.
 Basic Email Notifications
 
-Registration Confirmation: Send a welcome email or confirmation link upon successful registration.
+Registration Confirmation: Send a welcome email or confirmation link upon successful registration.->done
 Password Reset Link: Automate email for password reset requests, with a link that allows users to set a new password securely.
 
 Load Balancing and Caching: Add caching for commonly requested data, like user profiles, and consider load balancing for handling higher traffic.
 Rate Limiting: Protect against brute-force attacks by limiting the number of requests to sensitive endpoints.
 API Gateway: For advanced security, use an API gateway for better access control, monitoring, and throttling.
-WSIb3sO5AWBXH91d

@@ -2,18 +2,20 @@ const express = require('express');
 const bcrypt=require('bcryptjs');
 const jwt=require('jsonwebtoken');
 const User=require('../models/User');
-
+const { sendRegistrationEmail } = require('../../mail-service/mailService');
+const logger = require('../../logger');
 
 
 
 const userRegistration=async(req,res)=>{
-    console.log(req.body);
+    
     const {username,email,password,role}=req.body;
     try{
         if(!(username && email&& password && role)){
             return res.status(400).json({error:"all input fields required"});
 
         }
+        logger.info(`Attempting to register user with email: ${email}`);
         //check if user exists
         //if user exists throw error
         //else create user
@@ -26,6 +28,8 @@ const userRegistration=async(req,res)=>{
         
         const newUser=new User({username,email,password:hashedPassword,role});
         await newUser.save();
+        await sendRegistrationEmail(newUser.email, newUser.username);
+        logger.info(`User registered successfully: ${email}`);
        return  res.status(201).json({msg:"User created successfully"});
 
     }
@@ -42,16 +46,19 @@ const userLogin=async(req,res)=>{
         if(!(email && password)){
             return res.status(400).json({msg:"All input fields required"});
         }
+        logger.info(`User login attempt: ${email}`);
         //check if user exists
         const user=await User.findOne({email});
         if(!user){
             return res.status(400).json({msg:"User does not exist"});
         }
+        // console.log(user);
         //check if password is correct
         const validPassword=await bcrypt.compare(password,user.password);
         if(!validPassword){
             return res.status(400).json({msg:"Invalid password"});
         }
+        // console.log(user.role);
         //check if role is correct
         if(user.role!==role){
             return res.status(400).json({msg:"Invalid role"});
@@ -59,7 +66,10 @@ const userLogin=async(req,res)=>{
         //create token
         const token=jwt.sign({id:user._id,email:user.email,role:user.role},process.env.TOKEN_SECRET,{expiresIn:"1h"});
         //send token
-        res.header('auth-token',token);
+        console.log(token);
+        res.header('authorization',token);
+        // console.log(token);
+        logger.info(`User login Succesfull: ${email}`);
         return res.status(200).json({msg:"Login successful"});
 
     }
@@ -71,8 +81,11 @@ const userLogin=async(req,res)=>{
 
 const userLogout=async(req,res)=>{
     try{
-        console.log(req.headers);
-        res.removeHeader('auth-token'); // Remove the header entirely
+        // console.log(req.headers);
+        const email=req.user.email;
+        logger.info(`User logout: ${email}`);
+        res.removeHeader('authorization'); // Remove the header entirely
+
         return res.status(200).json({msg:"Logout successful"});
 
 

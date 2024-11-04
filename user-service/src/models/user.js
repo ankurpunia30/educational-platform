@@ -32,4 +32,8 @@ const userSchema=new Schema({
 
 });
 
+//creating index on email field
+userSchema.index({email:1});
+
+
 module.exports=mongoose.model('User',userSchema);
