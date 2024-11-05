@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {userValidationRules,validateUser}=require('../middleware/validateInput');
-
+const authLimiter =require('../middleware/rateLimit');
 const {    userRegistration,
     userLogin,
     userLogout,
@@ -16,11 +16,11 @@ const authenticate = require('../middleware/authenticate');
 
 
 //register a user
-router.post('/register',userRegistration);
+router.post('/register',authLimiter,userRegistration);
 
 //login a user
 
-router.post('/login',userLogin);
+router.post('/login',authLimiter,userLogin);
 
 //fetching profile
 
